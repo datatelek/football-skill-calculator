@@ -189,11 +189,14 @@
         const ALPHA = 0.2030;
         const C = 0.77;
         
-        function fAge(age) {
+        function fAge(age, mvEur) {
             const x = age - PEAK_AGE;
             if (age <= PEAK_AGE) {
-                let base = 1.0 - 0.006 * x * x;
-                let premium = age <= 21 ? 0.02 * Math.max(0, 21 - age) : 0;
+                let base = 1.0 - 0.010 * x * x;
+                let premium = 0;
+                if (age <= 21 && mvEur <= 2_000_000) {
+                    premium = 0.03 * Math.max(0, 21 - age);
+                }
                 return Math.min(base + premium, 1.0);
             } else {
                 return Math.max(Math.exp(-0.065 * Math.pow(x, 1.55)), 0.02);
@@ -201,9 +204,10 @@
         }
         
         function calcSkill(mvEur, age) {
-            const fa = fAge(age);
+            const fa = fAge(age, mvEur);
             let skill = (Math.log(mvEur) - Math.log(fa) - C) / ALPHA;
-            return Math.min(Math.max(Math.round(skill), 40), 99);        }
+            return Math.min(Math.max(Math.round(skill), 40), 99);
+        }
         
         function getSkillColor(skill) {
             if (skill >= 90) return '#4caf50';
@@ -233,10 +237,11 @@
             
             const mvEur = mvM * 1_000_000;
             const skill = calcSkill(mvEur, age);
-            const fa = fAge(age);
+            const fa = fAge(age, mvEur);
             
             const skillEl = document.getElementById('skillValue');
-            skillEl.textContent = skill;            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
+            skillEl.textContent = skill;
+            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
             skillEl.style['-webkit-background-clip'] = 'text';
             
             document.getElementById('details').innerHTML = 
