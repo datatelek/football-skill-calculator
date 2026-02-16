@@ -203,8 +203,7 @@
         function calcSkill(mvEur, age) {
             const fa = fAge(age);
             let skill = (Math.log(mvEur) - Math.log(fa) - C) / ALPHA;
-            return Math.min(Math.max(Math.round(skill * 10) / 10, 40), 99);
-        }
+            return Math.min(Math.max(Math.round(skill), 40), 99);        }
         
         function getSkillColor(skill) {
             if (skill >= 90) return '#4caf50';
@@ -237,8 +236,7 @@
             const fa = fAge(age);
             
             const skillEl = document.getElementById('skillValue');
-            skillEl.textContent = skill.toFixed(1);
-            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
+            skillEl.textContent = skill;            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
             skillEl.style['-webkit-background-clip'] = 'text';
             
             document.getElementById('details').innerHTML = 
