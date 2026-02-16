@@ -58,10 +58,10 @@
         }
         input:focus, select:focus { border-color: #4fc3f7; }
         input::placeholder { color: #555; }
-                        select option {
+        select option {
             background: #fff;
             color: #000;
-                                    }
+        }
         .inline-label {
             font-size: 12px;
             color: #777;
@@ -94,7 +94,7 @@
         .result-box.show { display: block; animation: fadeIn 0.3s ease; }
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
-            to   { opacity: 1; transform: translateY(0); }
+            to { opacity: 1; transform: translateY(0); }
         }
         .skill-number {
             font-size: 64px;
@@ -145,136 +145,123 @@
     </style>
 </head>
 <body>
-<div class="container">
-    <h1>⚽ Skill Rating Calculator</h1>
-    <p class="subtitle">Стоимость Transfermarkt → Skill (50–99)</p>
-
-    <div class="field">
-        <label>💰 Рыночная стоимость (в миллионах €)</label>
-        <input type="number" id="mvM" placeholder="Например: 50 (за €50M)" step="0.1" min="0">
-        <div class="inline-label">Примеры: 180 = €180M, 3 = €3M, 0.8 = €0.8M</div>
+    <div class="container">
+        <h1>⚽ Skill Rating Calculator</h1>
+        <p class="subtitle">Стоимость Transfermarkt → Skill (50–99)</p>
+        
+        <div class="field">
+            <label>💰 Рыночная стоимость (в миллионах €)</label>
+            <input type="number" id="mvM" placeholder="Например: 50 (за €50M)" step="0.1" min="0">
+            <div class="inline-label">Примеры: 180 = €180M, 3 = €3M, 0.8 = €0.8M</div>
+        </div>
+        
+        <div class="field">
+            <label>🎂 Возраст</label>
+            <input type="number" id="age" placeholder="Например: 25" min="16" max="42">
+        </div>
+        
+        <button class="btn" onclick="calculate()">Рассчитать Skill ⚡</button>
+        
+        <div class="result-box" id="result">
+            <div class="skill-number" id="skillValue">--</div>
+            <div class="skill-label">SKILL RATING</div>
+            <div class="details" id="details"></div>
+        </div>
+        
+        <div class="quick-examples">
+            <h3>⚡ Быстрые примеры:</h3>
+            <span class="example-btn" onclick="fillExample(180, 25)">Мбаппе (180M, 25)</span>
+            <span class="example-btn" onclick="fillExample(150, 21)">Беллингем (150M, 21)</span>
+            <span class="example-btn" onclick="fillExample(5, 38)">Модрич (5M, 38)</span>
+            <span class="example-btn" onclick="fillExample(3, 26)">Игрок (3M, 26)</span>
+            <span class="example-btn" onclick="fillExample(30, 30)">Ветеран (30M, 30)</span>
+            <span class="example-btn" onclick="fillExample(0.8, 22)">Молодой (0.8M, 22)</span>
+        </div>
+        
+        <p class="formula-note">
+            Формула: Skill = (ln(MV) − ln(f(age)) − 0.77) / 0.203<br>
+            MV = миллионы € × 1 000 000 | Пик стоимости: 26 лет
+        </p>
     </div>
-
-    <div class="field">
-        <label>🎂 Возраст</label>
-        <input type="number" id="age" placeholder="Например: 25" min="16" max="42">
-    </div>
-
-    <div class="field">
-        <label>🏟️ Уровень лиги</label>
-        <select id="tier">
-            <option value="1">Топ-5 (EPL, La Liga, Bundesliga, Serie A, Ligue 1)</option>
-            <option value="2">Топ-15 (Португалия, Нидерланды, Турция, Бельгия, Россия)</option>            option value="3">РПЛ, Суперлига Турции, MLS и т.п.</option>
-            <option value="3">Остальные лиги</option>    </div>
-
-    <button class="btn" onclick="calculate()">Рассчитать Skill ⚡</button>
-
-    <div class="result-box" id="result">
-        <div class="skill-number" id="skillValue">--</div>
-        <div class="skill-label">SKILL RATING</div>
-        <div class="details" id="details"></div>
-    </div>
-
-    <div class="quick-examples">
-        <h3>⚡ Быстрые примеры:</h3>
-        <span class="example-btn" onclick="fillExample(180, 25, 1)">Мбаппе (180M, 25)</span>
-        <span class="example-btn" onclick="fillExample(150, 21, 1)">Беллингем (150M, 21)</span>
-        <span class="example-btn" onclick="fillExample(5, 38, 1)">Модрич (5M, 38)</span>
-        <span class="example-btn" onclick="fillExample(3, 26, 3)">Игрок РПЛ (3M, 26)</span>
-        <span class="example-btn" onclick="fillExample(30, 30, 1)">Ветеран (30M, 30)</span>
-        <span class="example-btn" onclick="fillExample(0.8, 22, 4)">Молодой (0.8M, 22)</span>
-    </div>
-
-    <p class="formula-note">
-        Формула: Skill = (ln(MV) − ln(f(age)) − ln(g) − 0.77) / 0.203<br>
-        MV = миллионы € × 1 000 000 | Пик стоимости: 26 лет
-    </p>
-</div>
-
-<script>
-const PEAK_AGE = 26.0;
-const ALPHA = 0.2030;
-const C = 0.77;
-const LEAGUE_MULT = {1: 1.0, 2: 0.58, 3: 0.30};
-
-function fAge(age) {
-    const x = age - PEAK_AGE;
-    const LEAGUE_MULT = {1: 1.0, 2: 0.58, 3: 0.30};
-        let base = 1.0 - 0.006 * x * x;
-        let premium = age <= 21 ? 0.02 * Math.max(0, 21 - age) : 0;
-        return Math.min(base + premium, 1.0);
-    } else {
-        return Math.max(Math.exp(-0.065 * Math.pow(x, 1.55)), 0.02);
-    }
-}
-
-function calcSkill(mvEur, age, tier) {
-    const g = LEAGUE_MULT[tier] || 1.0;
-    const fa = fAge(age);
-    let skill = (Math.log(mvEur) - Math.log(fa) - Math.log(g) - C) / ALPHA;
-    return Math.min(Math.max(Math.round(skill * 10) / 10, 40), 99);
-}
-
-function getSkillColor(skill) {
-    if (skill >= 90) return '#4caf50';
-    if (skill >= 80) return '#8bc34a';
-    if (skill >= 70) return '#ffc107';
-    return '#ff9800';
-}
-
-function getSkillLabel(skill) {
-    if (skill >= 90) return 'Мировой класс 🌟';
-    if (skill >= 85) return 'Элитный уровень 💎';
-    if (skill >= 80) return 'Очень сильный 🔥';
-    if (skill >= 75) return 'Крепкий профи ⚡';
-    if (skill >= 70) return 'Средний уровень';
-    if (skill >= 65) return 'Ниже среднего';
-    return 'Начальный уровень';
-}
-
-function calculate() {
-    const mvM = parseFloat(document.getElementById('mvM').value);
-    const age = parseInt(document.getElementById('age').value);
-    const tier = parseInt(document.getElementById('tier').value);
-
-    if (!mvM || mvM <= 0 || !age || age < 16 || age > 42) {
-        alert('Введите корректную стоимость (в млн €) и возраст (16–42).');
-        return;
-    }
-
-    const mvEur = mvM * 1_000_000;
-    const skill = calcSkill(mvEur, age, tier);
-    const fa = fAge(age);
-    const g = LEAGUE_MULT[tier];
-
-    const skillEl = document.getElementById('skillValue');
-    skillEl.textContent = skill.toFixed(1);
-    skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
-    skillEl.style['-webkit-background-clip'] = 'text';
-
-    document.getElementById('details').innerHTML =
-        `<span>📊 Стоимость:</span> €${mvM.toFixed(2)}M<br>` +
-        `<span>🎂 Возраст:</span> ${age} лет<br>` +
-        `<span>📈 f(age):</span> ${fa.toFixed(4)} (пик=1.0 при 26)<br>` +
-        `<span>🏟️ g(league):</span> ${g}<br>` +
-        `<span>🎯 Уровень:</span> ${getSkillLabel(skill)}`;
-
-    const box = document.getElementById('result');
-    box.classList.remove('show');
-    void box.offsetWidth;
-    box.classList.add('show');
-}
-
-function fillExample(mvM, age, tier) {
-    document.getElementById('mvM').value = mvM;
-    document.getElementById('age').value = age;
-    document.getElementById('tier').value = tier;
-    calculate();
-}
-
-document.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter') calculate();
-});
-</script>
+    
+    <script>
+        const PEAK_AGE = 26.0;
+        const ALPHA = 0.2030;
+        const C = 0.77;
+        
+        function fAge(age) {
+            const x = age - PEAK_AGE;
+            if (age <= PEAK_AGE) {
+                let base = 1.0 - 0.006 * x * x;
+                let premium = age <= 21 ? 0.02 * Math.max(0, 21 - age) : 0;
+                return Math.min(base + premium, 1.0);
+            } else {
+                return Math.max(Math.exp(-0.065 * Math.pow(x, 1.55)), 0.02);
+            }
+        }
+        
+        function calcSkill(mvEur, age) {
+            const fa = fAge(age);
+            let skill = (Math.log(mvEur) - Math.log(fa) - C) / ALPHA;
+            return Math.min(Math.max(Math.round(skill * 10) / 10, 40), 99);
+        }
+        
+        function getSkillColor(skill) {
+            if (skill >= 90) return '#4caf50';
+            if (skill >= 80) return '#8bc34a';
+            if (skill >= 70) return '#ffc107';
+            return '#ff9800';
+        }
+        
+        function getSkillLabel(skill) {
+            if (skill >= 90) return 'Мировой класс 🌟';
+            if (skill >= 85) return 'Элитный уровень 💎';
+            if (skill >= 80) return 'Очень сильный 🔥';
+            if (skill >= 75) return 'Крепкий профи ⚡';
+            if (skill >= 70) return 'Средний уровень';
+            if (skill >= 65) return 'Ниже среднего';
+            return 'Начальный уровень';
+        }
+        
+        function calculate() {
+            const mvM = parseFloat(document.getElementById('mvM').value);
+            const age = parseInt(document.getElementById('age').value);
+            
+            if (!mvM || mvM <= 0 || !age || age < 16 || age > 42) {
+                alert('Введите корректную стоимость (в млн €) и возраст (16–42).');
+                return;
+            }
+            
+            const mvEur = mvM * 1_000_000;
+            const skill = calcSkill(mvEur, age);
+            const fa = fAge(age);
+            
+            const skillEl = document.getElementById('skillValue');
+            skillEl.textContent = skill.toFixed(1);
+            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
+            skillEl.style['-webkit-background-clip'] = 'text';
+            
+            document.getElementById('details').innerHTML = 
+                `<span>📊 Стоимость:</span> €${mvM.toFixed(2)}M<br>` +
+                `<span>🎂 Возраст:</span> ${age} лет<br>` +
+                `<span>📈 f(age):</span> ${fa.toFixed(4)} (пик=1.0 при 26)<br>` +
+                `<span>🎯 Уровень:</span> ${getSkillLabel(skill)}`;
+            
+            const box = document.getElementById('result');
+            box.classList.remove('show');
+            void box.offsetWidth;
+            box.classList.add('show');
+        }
+        
+        function fillExample(mvM, age) {
+            document.getElementById('mvM').value = mvM;
+            document.getElementById('age').value = age;
+            calculate();
+        }
+        
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') calculate();
+        });
+    </script>
 </body>
 </html>
