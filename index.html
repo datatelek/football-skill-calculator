@@ -164,11 +164,8 @@
         <label>🏟️ Уровень лиги</label>
         <select id="tier">
             <option value="1">Топ-5 (EPL, La Liga, Bundesliga, Serie A, Ligue 1)</option>
-            <option value="2">Эредивизи, Лига Португалии, Бельгия и т.п.</option>
-            <option value="3">РПЛ, Суперлига Турции, MLS и т.п.</option>
-            <option value="4">Малые лиги</option>
-        </select>
-    </div>
+            <option value="2">Топ-15 (Португалия, Нидерланды, Турция, Бельгия, Россия)</option>            option value="3">РПЛ, Суперлига Турции, MLS и т.п.</option>
+            <option value="3">Остальные лиги</option>    </div>
 
     <button class="btn" onclick="calculate()">Рассчитать Skill ⚡</button>
 
@@ -198,11 +195,11 @@
 const PEAK_AGE = 26.0;
 const ALPHA = 0.2030;
 const C = 0.77;
-const LEAGUE_MULT = {1: 1.0, 2: 0.65, 3: 0.45, 4: 0.25};
+const LEAGUE_MULT = {1: 1.0, 2: 0.58, 3: 0.30};
 
 function fAge(age) {
     const x = age - PEAK_AGE;
-    if (age <= PEAK_AGE) {
+    const LEAGUE_MULT = {1: 1.0, 2: 0.58, 3: 0.30};
         let base = 1.0 - 0.006 * x * x;
         let premium = age <= 21 ? 0.02 * Math.max(0, 21 - age) : 0;
         return Math.min(base + premium, 1.0);
