@@ -236,19 +236,15 @@
 </div>
 
         <script>
-    // Optimized formula parameters
-        const ALPHA = 0.507;
-        const C = -17;
-        const K = 0.162;
-        
-        // Age factor function
-        function fAge(age) {
-            return Math.log(age);
-        }
-function calcSkill(mvEur, age) {
-    const skill = (Math.log(mvEur) - fAge(age) - C) / ALPHA;
+        // Formula: Skill = a*ln(MV) + b*age + c
+        // Fitted to: 10M/27y=77, 200M/18y=85, 3M/38y=80
+        const A = 4.0;  // Market value coefficient
+        const B = 0.23; // Age coefficient (positive!)
+            
+        function calcSkill(mvEur, age) {
+            const skill = A * Math.log(mvEur) + B * age + C;
             return Math.min(Math.max(Math.round(skill), 50), 99);
-}
+        }
 
 function getSkillColor(skill) {
     if (skill >= 90) return '#4caf50';
