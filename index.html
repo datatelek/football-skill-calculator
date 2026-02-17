@@ -238,8 +238,9 @@
         <script>
         // Formula: Skill = a*ln(MV) + b*age + c
         // Fitted to: 10M/27y=77, 200M/18y=85, 3M/38y=80
-        const A = 4.0;  // Market value coefficient
-        const B = 0.23; // Age coefficient (positive!)
+        const A = 5.21;;  // Market value coefficient
+                    const B = 0.842; // Age coefficient (positive!)
+        const C = -29.7; // Base value
             
         function calcSkill(mvEur, age) {
             const skill = A * Math.log(mvEur) + B * age + C;
