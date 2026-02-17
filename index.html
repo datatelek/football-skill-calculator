@@ -246,7 +246,6 @@ function fAge(age) {
 }
 
 function calcSkill(mvEur, age) {
-    const fa = fAge(age);
     const skill = (Math.log(mvEur) + K * age - C) / ALPHA;
     return Math.min(Math.max(Math.round(skill * 10) / 10, 50), 99);
 }
