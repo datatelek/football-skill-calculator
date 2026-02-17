@@ -231,17 +231,12 @@
 
     <div class="formula-note">
         <strong>Формула:</strong> <code>Skill = (ln(MV) − ln(f<sub>age</sub>) − C) / α</code><br>
-            где <code>f(age) = e<sup>-0.445×age</sup></code>, <code>C = -17</code>, <code>σ = 0.445</code>, <code>α = 0.507</code><br>        <em>Монотонная зависимость: чем старше игрок → тем выше skill при равной стоимости</em>
+            где <code>f(age) = e<sup>-0.162×age</sup></code>, <code>C = -17</code>, <code>σ = 0.162</code>, <code>α = 0.507</code><br>        <em>Монотонная зависимость: чем старше игрок → тем выше skill при равной стоимости</em>
     </div>
 </div>
 
-<script>
-const K = 0.445;const C = -17;
-const ALPHA = 0.507;
-function fAge(age) {
-    return Math.exp(-K * age);
-}
-
+            где <code>f(age) = e<sup>-0.162×age</sup></code>, <code>C = -8.1</code>, <code>σ = 0.162</code>, <code>α = 0.192</code><br>       <em>Монотонная зависимость: чем старше игрок → тем выше skill при равной стоимости</em>    const ALPHA = 0.192;    const ALPHA = 0.192;    return Math.exp(-K * age);
+    const k = 0.162;const C = -8.1;
 function calcSkill(mvEur, age) {
     const skill1 = (Math.log(mvEur) - Math.log(fAge(age)) - C) / ALPHA;    return Math.min(Math.max(Math.round(skill), 50), 99);
 }
