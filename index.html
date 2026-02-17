@@ -2,12 +2,13 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>⚽ Skill Rating Calculator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚽ Football Skill Calculator</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: linear-gradient(135deg, #0f1923 0%, #1a2a3a 100%);
+            background: linear-gradient(135deg, #0a1628 0%, #1a2f45 100%);
             color: #e0e0e0;
             min-height: 100vh;
             display: flex;
@@ -16,255 +17,306 @@
             padding: 20px;
         }
         .container {
-            background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 40px;
-            max-width: 520px;
+            background: rgba(255,255,255,0.06);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 24px;
+            padding: 45px;
+            max-width: 540px;
             width: 100%;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
         }
         h1 {
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 8px;
+            font-size: 28px;
+            margin-bottom: 10px;
             color: #fff;
+            font-weight: 700;
         }
         .subtitle {
             text-align: center;
-            color: #888;
-            font-size: 13px;
-            margin-bottom: 30px;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 35px;
+            line-height: 1.5;
         }
-        .field { margin-bottom: 20px; }
+        .field { margin-bottom: 22px; }
         label {
             display: block;
-            font-size: 13px;
-            color: #aaa;
-            margin-bottom: 6px;
+            font-size: 14px;
+            color: #bbb;
+            margin-bottom: 7px;
             font-weight: 500;
         }
-        input, select {
+        input {
             width: 100%;
-            padding: 12px 16px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 10px;
+            padding: 14px 18px;
+            background: rgba(255,255,255,0.09);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
             color: #fff;
-            font-size: 16px;
+            font-size: 17px;
             outline: none;
-            transition: border-color 0.2s;
+            transition: all 0.2s;
         }
-        input:focus, select:focus { border-color: #4fc3f7; }
-        input::placeholder { color: #555; }
-        select option {
-            background: #fff;
-            color: #000;
+        input:focus { 
+            border-color: #42a5f5; 
+            background: rgba(255,255,255,0.12);
         }
-        .inline-label {
+        input::placeholder { color: #666; }
+        .inline-hint {
             font-size: 12px;
             color: #777;
-            margin-top: 2px;
+            margin-top: 4px;
         }
         .btn {
             width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #4fc3f7, #2196f3);
+            padding: 16px;
+            background: linear-gradient(135deg, #42a5f5, #1e88e5);
             border: none;
-            border-radius: 10px;
+            border-radius: 12px;
             color: #fff;
-            font-size: 17px;
+            font-size: 18px;
             font-weight: 600;
             cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.1s, box-shadow 0.2s;
+            margin-top: 12px;
+            transition: all 0.2s;
+            box-shadow: 0 4px 15px rgba(66,165,245,0.3);
         }
-        .btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(33,150,243,0.4); }
+        .btn:hover { 
+            transform: translateY(-2px); 
+            box-shadow: 0 8px 25px rgba(66,165,245,0.5); 
+        }
         .btn:active { transform: translateY(0); }
         .result-box {
-            margin-top: 25px;
-            background: rgba(76,175,80,0.1);
-            border: 1px solid rgba(76,175,80,0.3);
-            border-radius: 14px;
-            padding: 24px;
+            margin-top: 30px;
+            background: rgba(76,175,80,0.12);
+            border: 1px solid rgba(76,175,80,0.35);
+            border-radius: 16px;
+            padding: 28px;
             text-align: center;
             display: none;
         }
-        .result-box.show { display: block; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .result-box.show { 
+            display: block; 
+            animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to   { opacity: 1; transform: translateY(0); }
         }
         .skill-number {
-            font-size: 64px;
+            font-size: 72px;
             font-weight: 800;
-            background: linear-gradient(135deg, #4caf50, #8bc34a);
+            background: linear-gradient(135deg, #4caf50, #66bb6a);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
+            margin-bottom: 8px;
         }
-        .skill-label { font-size: 14px; color: #aaa; margin-top: 4px; }
+        .skill-label { 
+            font-size: 15px; 
+            color: #aaa; 
+            margin-bottom: 18px; 
+        }
+        .rating-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 16px;
+        }
         .details {
-            margin-top: 16px;
-            font-size: 12px;
-            color: #777;
-            line-height: 1.8;
+            margin-top: 18px;
+            font-size: 13px;
+            color: #888;
+            line-height: 2;
             text-align: left;
+            background: rgba(0,0,0,0.25);
+            border-radius: 10px;
+            padding: 14px 18px;
+        }
+        .details span { color: #ccc; font-weight: 500; }
+        .formula-section {
+            margin-top: 28px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+        }
+        .formula-section h3 { 
+            font-size: 14px; 
+            color: #999; 
+            margin-bottom: 12px; 
+        }
+        .examples {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .example-btn {
+            padding: 10px 14px;
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 10px;
+            color: #bbb;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .example-btn:hover { 
+            background: rgba(255,255,255,0.14); 
+            color: #fff;
+            border-color: rgba(255,255,255,0.25);
+        }
+        .formula-note {
+            margin-top: 22px;
+            font-size: 11px;
+            color: #666;
+            text-align: center;
+            line-height: 1.7;
+            padding: 12px;
             background: rgba(0,0,0,0.2);
             border-radius: 8px;
-            padding: 12px 16px;
         }
-        .details span { color: #bbb; }
-        .formula-note {
-            margin-top: 20px;
+        .formula-note code {
+            color: #42a5f5;
+            font-family: 'Courier New', monospace;
             font-size: 11px;
-            color: #555;
-            text-align: center;
-            line-height: 1.5;
         }
-        .quick-examples {
-            margin-top: 20px;
-            border-top: 1px solid rgba(255,255,255,0.08);
-            padding-top: 16px;
-        }
-        .quick-examples h3 { font-size: 13px; color: #888; margin-bottom: 10px; }
-        .example-btn {
-            display: inline-block;
-            padding: 6px 12px;
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 8px;
-            color: #aaa;
-            font-size: 12px;
-            cursor: pointer;
-            margin: 3px;
-            transition: background 0.2s;
-        }
-        .example-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>⚽ Skill Rating Calculator</h1>
-        <p class="subtitle">Стоимость Transfermarkt → Skill (50–99)</p>
-        
-        <div class="field">
-            <label>💰 Рыночная стоимость (в миллионах €)</label>
-            <input type="number" id="mvM" placeholder="Например: 50 (за €50M)" step="0.1" min="0">
-            <div class="inline-label">Примеры: 180 = €180M, 3 = €3M, 0.8 = €0.8M</div>
-        </div>
-        
-        <div class="field">
-            <label>🎂 Возраст</label>
-            <input type="number" id="age" placeholder="Например: 25" min="16" max="42">
-        </div>
-        
-        <button class="btn" onclick="calculate()">Рассчитать Skill ⚡</button>
-        
-        <div class="result-box" id="result">
-            <div class="skill-number" id="skillValue">--</div>
-            <div class="skill-label">SKILL RATING</div>
-            <div class="details" id="details"></div>
-        </div>
-        
-        <div class="quick-examples">
-            <h3>⚡ Быстрые примеры:</h3>
-            <span class="example-btn" onclick="fillExample(180, 25)">Мбаппе (180M, 25)</span>
-            <span class="example-btn" onclick="fillExample(150, 21)">Беллингем (150M, 21)</span>
-            <span class="example-btn" onclick="fillExample(5, 38)">Модрич (5M, 38)</span>
-            <span class="example-btn" onclick="fillExample(3, 26)">Игрок (3M, 26)</span>
-            <span class="example-btn" onclick="fillExample(30, 30)">Ветеран (30M, 30)</span>
-            <span class="example-btn" onclick="fillExample(0.8, 22)">Молодой (0.8M, 22)</span>
-        </div>
-        
-        <p class="formula-note">
-            Формула: Skill = (ln(MV) − ln(f(age)) − 0.77) / 0.203<br>
-            MV = миллионы € × 1 000 000 | Пик стоимости: 26 лет
-        </p>
+<div class="container">
+    <h1>⚽ Football Skill Calculator</h1>
+    <p class="subtitle">
+        Расчёт реального скилла футболиста по стоимости и возрасту<br>
+        <strong>Чем старше → выше skill при той же цене</strong>
+    </p>
+
+    <div class="field">
+        <label>💰 Рыночная стоимость (в миллионах €)</label>
+        <input type="number" id="mvM" placeholder="Например: 50" step="0.1" min="0.1">
+        <div class="inline-hint">Примеры: 180 = €180M, 3 = €3M, 0.5 = €500K</div>
     </div>
-    
-    <script>
-        const PEAK_AGE = 26.0;
-        const ALPHA = 0.2030;
-        const C = 0.77;
-        
-        function fAge(age, mvEur) {
-            const x = age - PEAK_AGE;
-            if (age <= PEAK_AGE) {
-                let base = 1.0 - 0.010 * x * x;
-                let premium = 0;
-                if (age <= 21 && mvEur <= 2_000_000) {
-                    premium = 0.03 * Math.max(0, 21 - age);
-                }
-                return Math.min(base + premium, 1.0);
-            } else {
-                return Math.max(Math.exp(-0.065 * Math.pow(x, 1.55)), 0.02);
-            }
-        }
-        
-        function calcSkill(mvEur, age) {
-            const fa = fAge(age, mvEur);
-            let skill = (Math.log(mvEur) - Math.log(fa) - C) / ALPHA;
-            return Math.min(Math.max(Math.round(skill), 40), 99);
-        }
-        
-        function getSkillColor(skill) {
-            if (skill >= 90) return '#4caf50';
-            if (skill >= 80) return '#8bc34a';
-            if (skill >= 70) return '#ffc107';
-            return '#ff9800';
-        }
-        
-        function getSkillLabel(skill) {
-            if (skill >= 90) return 'Мировой класс 🌟';
-            if (skill >= 85) return 'Элитный уровень 💎';
-            if (skill >= 80) return 'Очень сильный 🔥';
-            if (skill >= 75) return 'Крепкий профи ⚡';
-            if (skill >= 70) return 'Средний уровень';
-            if (skill >= 65) return 'Ниже среднего';
-            return 'Начальный уровень';
-        }
-        
-        function calculate() {
-            const mvM = parseFloat(document.getElementById('mvM').value);
-            const age = parseInt(document.getElementById('age').value);
-            
-            if (!mvM || mvM <= 0 || !age || age < 16 || age > 42) {
-                alert('Введите корректную стоимость (в млн €) и возраст (16–42).');
-                return;
-            }
-            
-            const mvEur = mvM * 1_000_000;
-            const skill = calcSkill(mvEur, age);
-            const fa = fAge(age, mvEur);
-            
-            const skillEl = document.getElementById('skillValue');
-            skillEl.textContent = skill;
-            skillEl.style.background = `linear-gradient(135deg, ${getSkillColor(skill)}, ${getSkillColor(skill-10)})`;
-            skillEl.style['-webkit-background-clip'] = 'text';
-            
-            document.getElementById('details').innerHTML = 
-                `<span>📊 Стоимость:</span> €${mvM.toFixed(2)}M<br>` +
-                `<span>🎂 Возраст:</span> ${age} лет<br>` +
-                `<span>📈 f(age):</span> ${fa.toFixed(4)} (пик=1.0 при 26)<br>` +
-                `<span>🎯 Уровень:</span> ${getSkillLabel(skill)}`;
-            
-            const box = document.getElementById('result');
-            box.classList.remove('show');
-            void box.offsetWidth;
-            box.classList.add('show');
-        }
-        
-        function fillExample(mvM, age) {
-            document.getElementById('mvM').value = mvM;
-            document.getElementById('age').value = age;
-            calculate();
-        }
-        
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') calculate();
-        });
-    </script>
+
+    <div class="field">
+        <label>🎂 Возраст игрока</label>
+        <input type="number" id="age" placeholder="Например: 25" min="16" max="42">
+        <div class="inline-hint">От 16 до 42 лет</div>
+    </div>
+
+    <button class="btn" onclick="calculate()">⚡ Рассчитать Skill</button>
+
+    <div class="result-box" id="result">
+        <div class="skill-number" id="skillValue">--</div>
+        <div class="skill-label">OVERALL RATING</div>
+        <div class="rating-badge" id="badge">--</div>
+        <div class="details" id="details"></div>
+    </div>
+
+    <div class="formula-section">
+        <h3>⚡ Быстрые примеры:</h3>
+        <div class="examples">
+            <div class="example-btn" onclick="fillExample(180, 27)">Мбаппе<br>180M • 27</div>
+            <div class="example-btn" onclick="fillExample(200, 26)">Холанд<br>200M • 26</div>
+            <div class="example-btn" onclick="fillExample(3, 40)">Модрич<br>3M • 40</div>
+            <div class="example-btn" onclick="fillExample(5, 38)">Ветеран<br>5M • 38</div>
+            <div class="example-btn" onclick="fillExample(30, 20)">Талант<br>30M • 20</div>
+            <div class="example-btn" onclick="fillExample(1, 22)">РПЛ игрок<br>1M • 22</div>
+        </div>
+    </div>
+
+    <div class="formula-note">
+        <strong>Формула:</strong> <code>Skill = (ln(MV) − ln(f<sub>age</sub>) − C) / α</code><br>
+        где <code>f(age) = e<sup>−0.035×age</sup></code>, <code>C = 1.15</code>, <code>α = 0.19</code><br>
+        <em>Монотонная зависимость: чем старше игрок → тем выше skill при равной стоимости</em>
+    </div>
+</div>
+
+<script>
+const K = 0.035;
+const C = 1.15;
+const ALPHA = 0.19;
+
+function fAge(age) {
+    return Math.exp(-K * age);
+}
+
+function calcSkill(mvEur, age) {
+    const fa = fAge(age);
+    const skill = (Math.log(mvEur) - Math.log(fa) - C) / ALPHA;
+    return Math.min(Math.max(Math.round(skill * 10) / 10, 50), 99);
+}
+
+function getSkillColor(skill) {
+    if (skill >= 90) return '#4caf50';
+    if (skill >= 85) return '#66bb6a';
+    if (skill >= 80) return '#fdd835';
+    if (skill >= 75) return '#ffb300';
+    if (skill >= 70) return '#ff9800';
+    return '#ff7043';
+}
+
+function getSkillLabel(skill) {
+    if (skill >= 90) return '🌟 Мировой класс';
+    if (skill >= 85) return '💎 Элита';
+    if (skill >= 80) return '🔥 Топ-уровень';
+    if (skill >= 75) return '⚡ Сильный профи';
+    if (skill >= 70) return '✅ Средний уровень';
+    if (skill >= 65) return '📊 Ниже среднего';
+    return '🎯 Базовый уровень';
+}
+
+function calculate() {
+    const mvM = parseFloat(document.getElementById('mvM').value);
+    const age = parseInt(document.getElementById('age').value);
+
+    if (!mvM || mvM <= 0) {
+        alert('❌ Введите корректную стоимость (больше 0)');
+        return;
+    }
+    if (!age || age < 16 || age > 42) {
+        alert('❌ Введите корректный возраст (16–42 года)');
+        return;
+    }
+
+    const mvEur = mvM * 1000000;
+    const skill = calcSkill(mvEur, age);
+    const fa = fAge(age);
+
+    const skillEl = document.getElementById('skillValue');
+    skillEl.textContent = skill.toFixed(1);
+    const color1 = getSkillColor(skill);
+    const color2 = getSkillColor(skill - 5);
+    skillEl.style.background = 'linear-gradient(135deg, ' + color1 + ', ' + color2 + ')';
+    skillEl.style['-webkit-background-clip'] = 'text';
+
+    document.getElementById('badge').textContent = getSkillLabel(skill);
+
+    document.getElementById('details').innerHTML =
+        '<span>💰 Стоимость:</span> €' + mvM.toFixed(2) + 'M<br>' +
+        '<span>🎂 Возраст:</span> ' + age + ' лет<br>' +
+        '<span>📉 f(age):</span> ' + fa.toFixed(5) + ' (чем старше → меньше)<br>' +
+        '<span>🎯 Итоговый skill:</span> ' + skill.toFixed(1) + ' / 99';
+
+    const box = document.getElementById('result');
+    box.classList.remove('show');
+    void box.offsetWidth;
+    box.classList.add('show');
+}
+
+function fillExample(mvM, age) {
+    document.getElementById('mvM').value = mvM;
+    document.getElementById('age').value = age;
+    calculate();
+}
+
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') calculate();
+});
+</script>
 </body>
 </html>
