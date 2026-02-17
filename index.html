@@ -239,7 +239,7 @@
 <script>
 const K = 0.025;
 const C = -17;
-const ALPHA = 0.40;
+const ALPHA = 0.48;
 
 function fAge(age) {
     return Math.exp(-K * age);
@@ -247,7 +247,7 @@ function fAge(age) {
 
 function calcSkill(mvEur, age) {
     const skill = (Math.log(mvEur) + K * age - C) / ALPHA;
-    return Math.min(Math.max(Math.round(skill * 10) / 10, 50), 99);
+    return Math.min(Math.max(Math.round(skill), 50), 99);
 }
 
 function getSkillColor(skill) {
@@ -287,7 +287,7 @@ function calculate() {
     const fa = fAge(age);
 
     const skillEl = document.getElementById('skillValue');
-    skillEl.textContent = skill.toFixed(1);
+    skillEl.textContent = skill;
     const color1 = getSkillColor(skill);
     const color2 = getSkillColor(skill - 5);
     skillEl.style.background = 'linear-gradient(135deg, ' + color1 + ', ' + color2 + ')';
@@ -299,7 +299,7 @@ function calculate() {
         '<span>💰 Стоимость:</span> €' + mvM.toFixed(2) + 'M<br>' +
         '<span>🎂 Возраст:</span> ' + age + ' лет<br>' +
         '<span>📉 f(age):</span> ' + fa.toFixed(5) + ' (чем старше → меньше)<br>' +
-        '<span>🎯 Итоговый skill:</span> ' + skill.toFixed(1) + ' / 99';
+        '<span>🎯 Итоговый skill:</span> ' + skill + ' / 99';
 
     const box = document.getElementById('result');
     box.classList.remove('show');
