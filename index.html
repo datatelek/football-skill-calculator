@@ -241,6 +241,10 @@
         const A = 5.21;;  // Market value coefficient
                     const B = 0.842; // Age coefficient (positive!)
         const C = -29.7; // Base value
+
+                function fAge(age) {
+        return Math.log(age);
+    }
             
         function calcSkill(mvEur, age) {
             const skill = A * Math.log(mvEur) + B * age + C;
